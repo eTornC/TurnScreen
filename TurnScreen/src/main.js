@@ -8,10 +8,13 @@ import rowGenerator from './components/layoutManager/rowGenerator.vue';
 import colGenerator from './components/layoutManager/colGenerator.vue';
 import contentGenerator from './components/layoutManager/contentGenerator.vue';
 import storeList from "./components/layoutManager/storeList.vue";
+import LayoutGenerator from "./components/layoutManager/layoutGenerator.vue";
 
 import showRowGenerator from './components/showScreen/showRowGenerator.vue';
 import showColGenerator from './components/showScreen/showColGenerator.vue';
 import showContentGenerator from './components/showScreen/showContentGenerator.vue';
+
+Vue.component('layout-component', LayoutGenerator);
 
 Vue.component('select-store', storeList);
 Vue.component('row-component', rowGenerator);

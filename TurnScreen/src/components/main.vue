@@ -50,6 +50,7 @@ import showLayoutGenerator from "../components/showScreen/showLayoutGenerator.vu
 
 import urls from "../api/config.js";
 
+
 export default {
   components: {
     "layout-component": LayoutGenerator,
@@ -76,16 +77,14 @@ export default {
   methods: {
     getSectionNumber() {
       let url = urls.host + urls.routes.apiPrefix + urls.routes.section;
+      console.log("section" + url);
       axios
         .get(url)
         .then(res => {
-          if (res.data.error) {
-            this.actualTurn = {};
-          } else {
-            this.sctionNumber = res.data.records.length;
-            return this.sctionNumber;
-            console.log(this.sctionNumber);
-          }
+          console.log(res.data.records[res.data.records.length-1].id);
+          this.sctionNumber = res.data.records[res.data.records.length-1].id;
+          return this.sctionNumber;
+          console.log("seccion number:" + this.sctionNumber);
         })
         .catch(err => {
           console.log(err);
@@ -94,7 +93,7 @@ export default {
     getTemplate() {
       let url = urls.host + urls.routes.apiPrefix + urls.routes.template;
       console.log(url);
-  
+
       axios
         .get(url)
         .then(response => {
@@ -156,7 +155,6 @@ export default {
     },
     generateGrid(jsonConfig) {
       this.htmlCode = "";
-
       if (jsonConfig.rows) {
         for (let i = 0; i < jsonConfig.rows.length; i++) {
           this.htmlCode += `<div class="row px-3 py-3 mx-0" style="border: 1px solid black">
@@ -227,7 +225,6 @@ export default {
           console.log(response);
           this.newScreenId = response.data;
           console.log("id del nou turn screen" + this.newScreenId);
-
         })
         .catch(function(error) {
           console.log(error);
@@ -279,7 +276,7 @@ export default {
   margin: 15px 0;
 }
 .workSpace-content {
-  background-color: rgb(250, 99, 169);
+  background-color: rgb(99, 250, 133);
 }
 .tools-content {
   background-color: rgb(252, 243, 121);
@@ -304,5 +301,28 @@ export default {
 }
 .col-md-12 {
   padding: 15px;
+}
+
+/*[ scroll bar style ]*/
+/* width */
+.plantilla-content::-webkit-scrollbar {
+  width: 13px;
+}
+
+/* Track */
+.plantilla-content::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 15px;
+}
+
+/* Handle */
+.plantilla-content::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+.plantilla-content::-webkit-scrollbar-thumb:hover {
+  background: grey;
 }
 </style>

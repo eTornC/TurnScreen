@@ -13,8 +13,8 @@
   </div>
   <div v-else style="border: 1px solid black" class="px-3 py-3">
     <div class="turnBox">
-      {{storeSelected}}
-      {{config.id}}
+     <!-- {{storeSelected}}
+      {{config.id}}-->
       <content-component
         v-on:input="storeSelected = $event; section[config.id]= storeSelected; uploat();  $emit('input', section)"
         :sectionId="config.id"
@@ -40,10 +40,6 @@ export default {
   },
 
   methods: {
-    select(ev) {
-      ev.target.style.backgroundColor =
-        "#" + (((1 << 24) * Math.random()) | 0).toString(16);
-    },
     uploat() {
       this.crearScreen = true;
       let url =
@@ -64,34 +60,18 @@ export default {
         });
       console.log(this.sections);
     },
-    crearSection() {
-      let url = urls.host + urls.routes.apiPrefix + urls.routes.section;
-      axios
-        .post(url, {
-          id: this.config.id,
-          id_store: this.storeSelected
-        })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      console.log(this.sections);
-    }
   },
   mounted() {},
   created() {
-    this.crearSection();
   }
 };
 </script>
 
 <style>
 .turnBox {
-  display: flex;
+  /*display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;*/
   height: 100%;
 }
 </style>
