@@ -44,12 +44,11 @@ export default {
       storeSelect: [],
       selectPositionCountID: 0,
       layoutPositionCountID: 0,
-      newScreenLayout: "",
+      newScreenLayout: ""
     };
   },
   mounted: function() {
     this.getStores();
-    this.getScreenLayout(this.id);
     console.log(this.id);
   },
   methods: {
@@ -61,6 +60,8 @@ export default {
         .get(url)
         .then(res => {
           reference.stores = res.data;
+          this.getScreenLayout(this.id);
+
           console.log(res.data);
         })
         .catch(err => {
@@ -68,7 +69,8 @@ export default {
         });
     },
     getScreenLayout(id) {
-      const url = urls.host + urls.routes.apiPrefix + urls.routes.layouts+ "/" + id;
+      const url =
+        urls.host + urls.routes.apiPrefix + urls.routes.layouts + "/" + id;
       var reference = this;
       console.log(url);
       axios
@@ -86,10 +88,15 @@ export default {
           console.log(err);
         });
     },
-     updateScreenName: function(e) {
+    updateScreenName: function(e) {
       console.log("UPDATING  this Screen" + e.target.innerText);
 
-      const url = urls.host + urls.routes.apiPrefix + urls.routes.layouts+ "/" +this.edit_screen.ID;
+      const url =
+        urls.host +
+        urls.routes.apiPrefix +
+        urls.routes.layouts +
+        "/" +
+        this.edit_screen.ID;
       axios
         .put(url, {
           NAME: e.target.innerText
@@ -126,18 +133,25 @@ export default {
 
         return this.StoreListHtmlCode;
       } else {
-        return this.crearStoreList();
+        return this.crearStoreList(jsonConfig.id);
       }
       //console.log(StoreListHtmlCode);
 
       this.StoreListHtmlCode = StoreListHtmlCode;
     },
-    crearStoreList() {
+    crearStoreList(id) {
       this.StoreListHtmlCode +=
-        `<select selectId="${this.selectPositionCountID}" class="form-control selecte` +'">';
+        `<select selectId="${
+          this.selectPositionCountID
+        }" class="form-control selecte` + '">';
       for (let i = 1; i < this.stores.length; i++) {
-        this.StoreListHtmlCode +=
-          '<option value="' + i + '">' + this.stores[i].name + "</option>";
+        if (i == id) {
+          this.StoreListHtmlCode +=
+            '<option selected value="' + i + '">' + this.stores[i].name + "</option>";
+        } else {
+          this.StoreListHtmlCode +=
+            '<option value="' + i + '">' + this.stores[i].name + "</option>";
+        }
       }
       this.StoreListHtmlCode += "</select>";
       this.selectPositionCountID++;
@@ -175,28 +189,48 @@ export default {
         this.newScreenLayout += "]";
         return this.newScreenLayout;
       } else {
-        this.newScreenLayout += `"id":${this.storeSelect[this.layoutPositionCountID]}`;
+        this.newScreenLayout += `"id":${
+          this.storeSelect[this.layoutPositionCountID]
+        }`;
         this.layoutPositionCountID++;
         return this.newScreenLayout;
       }
+    },
+    updateLayout() {
+      const url =
+        urls.host + urls.routes.apiPrefix + urls.routes.layouts + "/" + this.id;
+
+      axios
+        .put(url, {
+          LAYOUT: this.newScreenLayout
+        })
+        .then(function(response) {
+          console.log(response);
+          reference.templateSelect = null;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     save() {
       console.log("save");
       let storeSelect = [];
       $(".selecte").each(function(i) {
-        storeSelect[ $(this).attr("selectId")] = $(this)
+        storeSelect[$(this).attr("selectId")] = $(this)
           .children("option:selected")
           .val();
       });
       this.storeSelect = storeSelect;
       console.log(this.storeSelect);
+
       this.newScreenLayout = "{ ";
-      this.generateNewScreenLayout(JSON.parse(this.edit_screen.layout));
+      this.generateNewScreenLayout(JSON.parse(this.edit_screen.LAYOUT));
       this.newScreenLayout += "}";
       console.log("new layout:" + this.newScreenLayout);
-
-      this.layoutPositionCountID =0;
+      this.updateLayout();
+      this.layoutPositionCountID = 0;
     },
+
     setmode(mode) {
       this.mode = mode;
     }
