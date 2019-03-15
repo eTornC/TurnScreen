@@ -6,20 +6,20 @@
           v-if="edit_screen"
           @blur="updateScreenName"
           contenteditable="true"
-        >{{edit_screen.name}}</span>
+        >{{edit_screen.NAME}}</span>
       </div>
-      <div v-if="edit_screen" class="template">
-        <layout-component :sections="sections" :jsonConfig=" JSON.parse(edit_screen.layout)"/>
-        <!--div v-html="StoreListHtmlCode"></div-->
+      <div class="template">
+        <!--layout-component :sections="sections" :jsonConfig=" JSON.parse(edit_screen.layout)"/-->
+        <div id="option"></div>
       </div>
     </div>
     <div class="option">
       <div class="cancel">
         <button @click="$emit('input', 'home');" type="button" class="btn btn-danger">Cancelar</button>
       </div>
-      <!--div class="save">
-          <button type="button" class="btn btn-primary">Guardar</button>
-      </div-->
+      <div class="save">
+        <button @click="save" type="button" class="btn btn-primary">Guardar</button>
+      </div>
     </div>
   </div>
 </template>
@@ -27,7 +27,9 @@
 <script>
 import axios from "axios";
 import urls from "../api/config.js";
-
+global.jQuery = require("jQuery");
+var $ = global.jQuery;
+window.$ = $;
 export default {
   props: {
     id: Number,
@@ -38,7 +40,11 @@ export default {
       edit_screen: null,
       StoreListHtmlCode: "",
       stores: [],
-      sections: [0]
+      sections: [0],
+      storeSelect: [],
+      selectPositionCountID: 0,
+      layoutPositionCountID: 0,
+      newScreenLayout: "",
     };
   },
   mounted: function() {
@@ -62,8 +68,7 @@ export default {
         });
     },
     getScreenLayout(id) {
-      let url =
-        urls.host + urls.routes.apiPrefix + urls.routes.turnScreen + "/" + id;
+      const url = urls.host + urls.routes.apiPrefix + urls.routes.layouts+ "/" + id;
       var reference = this;
       console.log(url);
       axios
@@ -72,25 +77,22 @@ export default {
           //console.log(res.data);
           reference.edit_screen = res.data;
           reference.StoreListHtmlCode = reference.generateGrid(
-            JSON.parse(reference.edit_screen.layout)
+            JSON.parse(reference.edit_screen.LAYOUT)
           );
-          console.log(reference.StoreListHtmlCode);
+          console.log("html" + reference.StoreListHtmlCode);
+          $("#option").html(reference.StoreListHtmlCode);
         })
         .catch(err => {
           console.log(err);
         });
     },
-    updateScreenName: function(e) {
+     updateScreenName: function(e) {
       console.log("UPDATING  this Screen" + e.target.innerText);
-      let url =
-        urls.host +
-        urls.routes.apiPrefix +
-        urls.routes.turnScreen +
-        "/" +
-        this.edit_screen.id;
+
+      const url = urls.host + urls.routes.apiPrefix + urls.routes.layouts+ "/" +this.edit_screen.ID;
       axios
         .put(url, {
-          name: e.target.innerText
+          NAME: e.target.innerText
         })
         .then(function(response) {
           console.log(response);
@@ -103,7 +105,9 @@ export default {
       this.StoreListHtmlCode = "";
       if (jsonConfig.rows) {
         for (let i = 0; i < jsonConfig.rows.length; i++) {
-          this.StoreListHtmlCode += `<div class="row px-3 py-3 mx-0" style="border: 1px solid black">
+          this.StoreListHtmlCode += `<div class="row px-3 py-3 mx-0" style="height: ${
+            jsonConfig.rows[i].height
+          }%;border: 1px solid black">
 													${this.generateGrid(jsonConfig.rows[i])}
 												</div>`;
         }
@@ -113,7 +117,9 @@ export default {
         for (let i = 0; i < jsonConfig.cols.length; i++) {
           this.StoreListHtmlCode += `<div class="col-md-${
             jsonConfig.cols[i].width
-          } px-3 py-3 mx-0 " style="border: 1px solid black">
+          } px-3 py-3 mx-0 " style=" height: ${
+            jsonConfig.cols[i].height
+          }%; border: 1px solid black">
 													${this.generateGrid(jsonConfig.cols[i])}
 												</div>`;
         }
@@ -122,19 +128,74 @@ export default {
       } else {
         return this.crearStoreList();
       }
-      console.log(StoreListHtmlCode);
+      //console.log(StoreListHtmlCode);
 
       this.StoreListHtmlCode = StoreListHtmlCode;
     },
     crearStoreList() {
-      this.StoreListHtmlCode += '<select class="form-control' + '">';
-      for (let i = 0; i < this.stores.length; i++) {
+      this.StoreListHtmlCode +=
+        `<select selectId="${this.selectPositionCountID}" class="form-control selecte` +'">';
+      for (let i = 1; i < this.stores.length; i++) {
         this.StoreListHtmlCode +=
           '<option value="' + i + '">' + this.stores[i].name + "</option>";
       }
       this.StoreListHtmlCode += "</select>";
+      this.selectPositionCountID++;
       return this.StoreListHtmlCode;
-      console.log(this.StoreListHtmlCode);
+      //console.log(this.StoreListHtmlCode);
+    },
+    generateNewScreenLayout(newLayout) {
+      if (newLayout.rows) {
+        this.newScreenLayout += '"rows":[';
+
+        for (let i = 0; i < newLayout.rows.length; i++) {
+          this.newScreenLayout += `{"height": ${newLayout.rows[i].height},`;
+          this.generateNewScreenLayout(newLayout.rows[i]);
+          if (i == newLayout.rows.length - 1) {
+            this.newScreenLayout += "}";
+          } else {
+            this.newScreenLayout += "},";
+          }
+        }
+        this.newScreenLayout += "]";
+        return this.newScreenLayout;
+      } else if (newLayout.cols) {
+        this.newScreenLayout += '"cols":[';
+        for (let i = 0; i < newLayout.cols.length; i++) {
+          this.newScreenLayout += `{ "width": ${
+            newLayout.cols[i].width
+          } ,"height": ${newLayout.cols[i].height},`;
+          this.generateNewScreenLayout(newLayout.cols[i]);
+          if (i == newLayout.cols.length - 1) {
+            this.newScreenLayout += "}";
+          } else {
+            this.newScreenLayout += "},";
+          }
+        }
+        this.newScreenLayout += "]";
+        return this.newScreenLayout;
+      } else {
+        this.newScreenLayout += `"id":${this.storeSelect[this.layoutPositionCountID]}`;
+        this.layoutPositionCountID++;
+        return this.newScreenLayout;
+      }
+    },
+    save() {
+      console.log("save");
+      let storeSelect = [];
+      $(".selecte").each(function(i) {
+        storeSelect[ $(this).attr("selectId")] = $(this)
+          .children("option:selected")
+          .val();
+      });
+      this.storeSelect = storeSelect;
+      console.log(this.storeSelect);
+      this.newScreenLayout = "{ ";
+      this.generateNewScreenLayout(JSON.parse(this.edit_screen.layout));
+      this.newScreenLayout += "}";
+      console.log("new layout:" + this.newScreenLayout);
+
+      this.layoutPositionCountID =0;
     },
     setmode(mode) {
       this.mode = mode;
@@ -170,7 +231,7 @@ export default {
 
 .main_edit .content .template {
   background-color: #aaa;
-  height: 100%;
+  height: 90%;
   width: 100%;
   padding: 0;
 }
@@ -181,5 +242,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+.template #option {
+  height: 100%;
 }
 </style>

@@ -2,13 +2,13 @@
   <div class="app">
     <!--HOME-->
     <div v-if="mode == 'home'" class="screenConten">
-      <div class="screen" v-for="screen in turnScreen" :key="screen.id">
+      <div class="screen" v-for="screen in turnScreen" :key="screen.ID">
         <header>
           <div class="screen_name">
-            <span>{{screen.name}}</span>
+            <span>{{screen.NAME}}</span>
           </div>
           <div class="screen_option">
-            <div @click="editScreen(screen.id)">
+            <div @click="editScreen(screen.ID)">
               <img
                 src="https://image.flaticon.com/icons/svg/149/149307.svg"
                 alt="Smi"
@@ -16,7 +16,7 @@
                 width="100%"
               >
             </div>
-            <div @click="delScreen(screen.id)">
+            <div @click="delScreen(screen.ID)">
               <img
                 src="https://image.flaticon.com/icons/svg/1345/1345823.svg"
                 alt="delete"
@@ -36,16 +36,25 @@
         </div>
       </div>
       <div class="turnScreenBottom">
-        <div class="addButton">
+        <div @click="setmode('create')" class="addButton">
           <img src="https://image.flaticon.com/icons/svg/748/748113.svg" width="50%" height="50%">
         </div>
       </div>
     </div>
     <!--EDIT MODE-->
     <div class="main_edit" v-else-if="mode == 'edit'">
-      <edit-component v-on:input="mode = $event; getScreen();" :id="this.screenId" :mode="this.mode"/>
+      <edit-component
+        v-on:input="mode = $event; getScreen();"
+        :id="this.screenId"
+        :mode="this.mode"
+      />
     </div>
     <!--CREAR MODE-->
+    <create-component
+      v-else-if="mode == 'create'"
+      v-on:input="mode = $event; getScreen();"
+      :mode="this.mode"
+    />
   </div>
 </template>
 
@@ -53,10 +62,12 @@
 import axios from "axios";
 import urls from "../api/config.js";
 import edit from "./edit.vue";
+import newScreen from "./newScreen.vue";
 
 export default {
   components: {
-    "edit-component": edit
+    "edit-component": edit,
+    "create-component": newScreen
   },
   data() {
     return {
@@ -91,16 +102,19 @@ export default {
         });
     },
     getScreen() {
-      let url = urls.host + urls.routes.apiPrefix + urls.routes.turnScreen;
+      const url = urls.host + urls.routes.apiPrefix + urls.routes.layouts;
+      //console.log(url);
       var reference = this;
       axios
         .get(url)
         .then(res => {
-          console.log(res.data.records);
-          reference.turnScreen = res.data.records;
+          reference.turnScreen = res.data.records.filter(
+            layout => layout.TYPE == "TURN"
+          );
+          console.log(reference.turnScreen);
         })
         .catch(err => {
-          console.log(err);
+          console.error(err);
         });
     },
     delScreen(id) {
@@ -154,48 +168,14 @@ export default {
           console.log(error);
         });
     },
-    generateGrid(jsonConfig) {
-      this.StoreListHtmlCode = "";
-      if (jsonConfig.rows) {
-        for (let i = 0; i < jsonConfig.rows.length; i++) {
-          this.StoreListHtmlCode += `<div class="row px-3 py-3 mx-0" style="border: 1px solid black">
-													${this.generateGrid(jsonConfig.rows[i])}
-												</div>`;
-        }
 
-        return this.StoreListHtmlCode;
-      } else if (jsonConfig.cols) {
-        for (let i = 0; i < jsonConfig.cols.length; i++) {
-          this.StoreListHtmlCode += `<div class="col-md-${
-            jsonConfig.cols[i].width
-          } px-3 py-3 mx-0 " style="border: 1px solid black">
-													${this.generateGrid(jsonConfig.cols[i])}
-												</div>`;
-        }
-
-        return this.StoreListHtmlCode;
-      } else {
-        return this.crearStoreList();
-      }
-      console.log(StoreListHtmlCode);
-
-      this.StoreListHtmlCode = StoreListHtmlCode;
-    },
-    crearStoreList() {
-      this.StoreListHtmlCode += '<select class="form-control' + '">';
-      for (let i = 0; i < this.stores.length; i++) {
-        this.StoreListHtmlCode +=
-          '<option value="' + i + '">' + this.stores[i].name + "</option>";
-      }
-      this.StoreListHtmlCode += "</select>";
-      return this.StoreListHtmlCode;
-      console.log(this.StoreListHtmlCode);
-    },
     editScreen(id) {
       this.setmode("edit");
       this.screenId = id;
-      this.getScreenLayout(id);
       console.log(id);
+    },
+    createScreen() {
+      this.setmode("create");
     },
     setmode(mode) {
       this.mode = mode;
@@ -287,44 +267,5 @@ export default {
   height: 76%;
   background-color: blue;
   margin: 3%;
-}
-
-/* edit */
-.main_edit {
-  height: 80%;
-}
-.main_edit .content {
-  height: 700px;
-  width: 80%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-}
-.main_edit .content .name {
-  width: 100%;
-  font-size: 2rem;
-  background-color: #999;
-  height: 10%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1% 0;
-  border-radius: 5px;
-}
-
-.main_edit .content .template {
-  background-color: #aaa;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-}
-
-.main_edit .option {
-  height: 20%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
 }
 </style>
