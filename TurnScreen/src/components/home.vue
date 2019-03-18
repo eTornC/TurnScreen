@@ -27,12 +27,7 @@
           </div>
         </header>
         <div class="content">
-          <img
-            src="https://www.cssscript.com/wp-content/uploads/2015/03/Pinterest-like-Responsive-Fluid-Grid-Layout-with-Pure-JavaScript.jpg"
-            alt="Smiley face"
-            height="100%"
-            width="100%"
-          >
+          <screen-demo-component :jsonConfig="JSON.parse(screen.LAYOUT)"/>
         </div>
       </div>
       <div class="turnScreenBottom">
@@ -63,11 +58,13 @@ import axios from "axios";
 import urls from "../api/config.js";
 import edit from "./edit.vue";
 import newScreen from "./newScreen.vue";
+import demoScreen from "./turnScreen/screenDemo.vue";
 
 export default {
   components: {
     "edit-component": edit,
-    "create-component": newScreen
+    "create-component": newScreen,
+    "screen-demo-component": demoScreen
   },
   data() {
     return {
@@ -118,17 +115,17 @@ export default {
         });
     },
     delScreen(id) {
-      let url = urls.host + urls.routes.apiPrefix + urls.routes.turnScreen;
+      let url = urls.host + urls.routes.apiPrefix + urls.routes.layouts;
       var reference = this;
       axios
         .delete(`${url}/${id}`, {})
         .then(function(response) {
           console.log(response);
+          reference.getScreen();
         })
         .catch(function(error) {
           console.log(error);
         });
-      this.getScreen();
     },
     getScreenLayout(id) {
       let url =
@@ -204,6 +201,9 @@ export default {
   height: 400px;
   background-color: #999;
   margin: 10px auto;
+  -webkit-box-shadow: 2px 1px 10px 2px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 2px 1px 10px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 1px 10px 2px rgba(0, 0, 0, 0.5);
 }
 
 .turnScreenBottom {
@@ -264,8 +264,7 @@ export default {
   height: 80%;
 }
 .screen .content {
-  height: 76%;
-  background-color: blue;
-  margin: 3%;
+  height: 85%;
+  margin: 0%;
 }
 </style>

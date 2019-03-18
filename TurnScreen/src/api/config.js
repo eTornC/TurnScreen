@@ -11,6 +11,8 @@ export default {
     turnScreen: '/turnScreen',
     section:'/section',
     template:'/template',
+    layouts:'/LAYOUTS',
+
     //apiPrefix:'/api.php/records',
     apiPrefix:'/~a15zehcheche/eTorn/api.php/records',
 

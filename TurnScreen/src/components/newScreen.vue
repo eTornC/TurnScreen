@@ -47,12 +47,7 @@
           </div>
         </header>
         <div class="content">
-          <img
-            src="https://www.cssscript.com/wp-content/uploads/2015/03/Pinterest-like-Responsive-Fluid-Grid-Layout-with-Pure-JavaScript.jpg"
-            alt="Smiley face"
-            height="100%"
-            width="100%"
-          >
+          <screen-demo-component :jsonConfig="JSON.parse(template.LAYOUT)"/>
         </div>
       </div>
     </div>
@@ -65,8 +60,12 @@
 <script>
 import axios from "axios";
 import urls from "../api/config.js";
+import demoScreen from "./turnScreen/screenDemo.vue";
 
 export default {
+  components: {
+    "screen-demo-component": demoScreen
+  },
   data() {
     return {
       templates: null,
@@ -142,6 +141,9 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   margin: 50px auto;
+  -webkit-box-shadow: 2px 1px 10px 2px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 2px 1px 10px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 2px 1px 10px 2px rgba(0, 0, 0, 0.5);
 }
 .template header {
   height: 15%;
@@ -157,8 +159,7 @@ export default {
   padding-left: 10px;
 }
 .template .content {
-  height: 79%;
-  background-color: blue;
-  margin: 2%;
+  height: 85%;
+  margin: 0%;
 }
 </style>
