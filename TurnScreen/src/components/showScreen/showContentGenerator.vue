@@ -1,9 +1,21 @@
 <template>
-  <div class="store_pantalla my-2 mx-2">
-    <!--{{sectionId}}-->
-    <div v-for="store in store" :key="store.name">
-      <h1 class="mb-3 mt-2">{{store.name}}</h1>
-      <h3 class="mb-1">Torn Actual: {{computedActualTurn}}</h3>
+  <div v-if="store" class="turn_list">
+    <div class="store_name_content">
+      <div class="store_name">
+        <span>{{store.name}}</span>
+      </div>
+    </div>
+    <div class="store_turn_content">
+      <div class="store_turn">
+        <ul>
+          <li>
+            <span class="actual">{{computedActualTurn}}</span>
+          </li>
+        </ul>
+        <ul>
+          <li :key="waiting.id" v-for="waiting in turnWaiting" >T{{waiting.number}}</li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -14,66 +26,42 @@ import urls from "../../api/config.js";
 import axios from "axios";
 export default {
   props: {
-    sectionId: Number
+    storeId: Number
   },
   data() {
     return {
       urls,
       actualTurn: 0,
       resfescar: null,
-      storeId: null,
-      store: null
+      resfescarWaiting: null,
+      store: null,
+      turnWaiting: []
     };
   },
   methods: {
-    getStoreId() {
-      let url =
-        urls.host +
-        urls.routes.apiPrefix +
-        urls.routes.section +
-        "/" +
-        this.sectionId;
-
-      axios
-        .get(url)
-        .then(res => {
-          if (res.data.error) {
-            this.actualTurn = {};
-          } else {
-            this.storeId = res.data.id_store;
-            //console.log(this.sectionId + " " + this.storeId);
-            this.getStore();
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
     getStore() {
       const url =
         urls.host + urls.routes.prefix + urls.routes.store + "/" + this.storeId;
       //console.log(url);
-
       axios
         .get(url)
         .then(res => {
-          this.store = res.data;
-          //console.log(this.store);
+          this.store = res.data[0];
+
           this.updateActualTurn();
+          this.updateTurnWaiting();
         })
         .catch(err => {
           console.error(err);
         });
     },
     updateActualTurn() {
-      
-      
       const url =
         urls.host +
         urls.routes.prefix +
         urls.routes.store +
         "/" +
-        this.store[0].id +
+        this.store.id +
         "/actualTurn";
       //console.log(url);
 
@@ -84,6 +72,30 @@ export default {
             this.actualTurn = {};
           } else {
             this.actualTurn = res.data;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    updateTurnWaiting() {
+      const url =
+        urls.host +
+        urls.routes.prefix +
+        urls.routes.store +
+        "/" +
+        this.store.id +
+        "/turns";
+      //console.log(url);
+
+      axios
+        .get(url)
+        .then(res => {
+          if (res.data.error) {
+            this.turnWaiting = [];
+          } else {
+            this.turnWaiting = res.data;
+            //console.log(this.turnWaiting);
           }
         })
         .catch(err => {
@@ -106,9 +118,78 @@ export default {
     }
   },
   created() {
-    this.getStoreId();
+    this.getStore();
     this.resfescar = null;
-    //this.resfescar = setInterval(this.updateActualTurn, 1000);
+    this.resfescarWaiting = null;
+
+    this.resfescar = setInterval(this.updateActualTurn, 1000);
+    this.resfescarWaiting = setInterval(this.updateTurnWaiting, 1000);
+
   }
 };
 </script>
+
+<style scoped>
+.main {
+  height: 100%;
+}
+</style>
+
+
+<style>
+.col {
+  padding: 0 !important;
+}
+.row {
+  margin: 0;
+}
+.turn_list {
+  height: 100%;
+  width: 100%;
+  background-color: #eee;
+  font-family: sans-serif;
+  text-align: left;
+}
+
+/* store name*/
+.turn_list .store_name_content {
+  height: 70px;
+  width: 100%;
+  display: flex;
+}
+.turn_list .store_name {
+  background-color: #aaa;
+  width: 100%;
+  margin: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4em;
+  border-radius: 5px;
+}
+
+/* turn list*/
+.turn_list .store_turn_content {
+  height: 85%;
+  width: 100%;
+  display: flex;
+}
+.turn_list .store_turn {
+  width: 100%;
+  font-size: 3rem;
+}
+.turn_list .store_turn ul {
+  list-style: none;
+  padding: 0px 20px;
+  margin: 0;
+}
+.turn_list .store_turn ul li {
+  border-bottom: solid 1px black;
+  color: grey;
+  margin: 0;
+}
+.actual {
+  font-size: 6rem;
+  color: black;
+}
+</style>

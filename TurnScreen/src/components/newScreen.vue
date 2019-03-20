@@ -47,7 +47,7 @@
           </div>
         </header>
         <div class="content">
-          <screen-demo-component :jsonConfig="JSON.parse(template.LAYOUT)"/>
+            <screen-demo-component :jsonConfig="JSON.parse(template.LAYOUT)"/>
         </div>
       </div>
     </div>
@@ -127,7 +127,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .templateContent {
   display: flex;
   flex-wrap: wrap;

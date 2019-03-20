@@ -1,15 +1,5 @@
 <template>
   <div id="app">
-    <nav class="navbar-expand-lg navbar-dark bg-primary">
-      <div class="collapse navbar-collapse" id="navbarText">
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a class="nav-item nav-link active" @click="$router.push('/')">Home</a>
-          </div>
-        </div>
-        <span class="navbar-text">SETTING</span>
-      </div>
-    </nav>
     <router-view/>
   </div>
 </template>

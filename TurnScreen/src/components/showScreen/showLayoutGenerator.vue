@@ -1,6 +1,6 @@
 <template>
-      <div class="col-md-12">
-        <show-row-component :config="jsonConfig" class="px-3 py-3 mx-0"/>
+      <div class="col-md-12" style="height:100%" >
+        <show-row-component :config="jsonConfig" />
       </div>
 </template>
 
@@ -21,37 +21,18 @@ export default {
   },
 
   methods: {
-    generateGrid(jsonConfig) {
-      let htmlCode = "";
-
-      if (jsonConfig.rows) {
-        for (let i = 0; i < jsonConfig.rows.length; i++) {
-          htmlCode += `<div class="row px-3 py-3 mx-0" style="border: 1px solid black">
-													${this.generateGrid(jsonConfig.rows[i])}
-												</div>`;
-        }
-
-        return htmlCode;
-      } else if (jsonConfig.cols) {
-        for (let i = 0; i < jsonConfig.cols.length; i++) {
-          htmlCode += `<div class="col-md-${
-            jsonConfig.cols[i].width
-          } px-3 py-3 mx-0" style="border: 1px solid black">
-													${this.generateGrid(jsonConfig.cols[i])}
-												</div>`;
-        }
-
-        return htmlCode;
-      } else {
-        return jsonConfig.content;
-      }
-    },
 
   },
   created(){
-     
+     console.log(this.jsonConfig)
   }
 };
 </script>
+
+<style>
+.col-md-12{
+  padding: 0 !important;
+}
+</style>
 
 

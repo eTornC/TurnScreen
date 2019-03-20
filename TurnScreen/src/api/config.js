@@ -2,8 +2,8 @@
 
 export default {
 
- host: 'http://labs.iam.cat',
- //host: 'http://localhost',
+ //host: 'http://labs.iam.cat',
+ host: 'http://localhost',
 
   port: 80,
 
@@ -13,11 +13,11 @@ export default {
     template:'/template',
     layouts:'/LAYOUTS',
 
-    //apiPrefix:'/api.php/records',
-    apiPrefix:'/~a15zehcheche/eTorn/api.php/records',
+    apiPrefix:'/api.php/records',
+    //apiPrefix:'/~a15zehcheche/eTorn/api.php/records',
 
-    prefix: '/~a16josortmar/eTorn',
-    //prefix: '/eTorn',
+    //prefix: '/~a16josortmar/eTorn',
+    prefix: '/eTorn',
 
     stores: '/stores',
     store: '/store',

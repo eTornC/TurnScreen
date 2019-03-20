@@ -1,12 +1,12 @@
 <template>
-  <div style="border: 1px solid black" v-if="config.rows" class="px-3 py-3">
+  <div :style="'height:'+ config.height +'%'+';border: 1px solid black'" v-if="config.rows">
     <template v-for="(row, index) in config.rows">
       <show-row-component :config="row" :key="index"/>
     </template>
   </div>
-  <div v-else style="border: 1px solid black" class="px-3 py-3">
+  <div v-else :style="'height:'+ config.height+'%' +';border: 1px solid black'" class="px-3 py-3">
     <div class="turnBox">
-       <show-content-component :sectionId="config.id"/>
+      <show-content-component :storeId="config.id"/>
     </div>
   </div>
 </template>
@@ -28,8 +28,7 @@ export default {
         "#" + (((1 << 24) * Math.random()) | 0).toString(16);
     }
   },
-  created() {
-  }
+  created() {}
 };
 </script>
 
@@ -39,5 +38,9 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
+  overflow: hidden;
+}
+.col {
+  padding: 0;
 }
 </style>

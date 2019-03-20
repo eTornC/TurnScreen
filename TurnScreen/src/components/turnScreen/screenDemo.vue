@@ -14,7 +14,7 @@ export default {
     };
   },
   mounted: function() {
-      console.log(this.jsonConfig);
+      console.log("json"+this.jsonConfig);
       this.generateGrid(this.jsonConfig);
 
   },

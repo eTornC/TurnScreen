@@ -27,9 +27,12 @@
 <script>
 import axios from "axios";
 import urls from "../api/config.js";
+//import $ from "../assets/jquery.js";
+
 global.jQuery = require("jQuery");
 var $ = global.jQuery;
 window.$ = $;
+
 export default {
   props: {
     id: Number,
@@ -54,14 +57,13 @@ export default {
   methods: {
     getStores() {
       const url = urls.host + urls.routes.prefix + urls.routes.stores;
-      //console.log(url);
+      console.log(url);
       var reference = this;
       axios
         .get(url)
         .then(res => {
           reference.stores = res.data;
           this.getScreenLayout(this.id);
-
           console.log(res.data);
         })
         .catch(err => {
@@ -81,7 +83,8 @@ export default {
           reference.StoreListHtmlCode = reference.generateGrid(
             JSON.parse(reference.edit_screen.LAYOUT)
           );
-          console.log("html" + reference.StoreListHtmlCode);
+
+          console.log(reference.edit_screen.LAYOUT);
           $("#option").html(reference.StoreListHtmlCode);
         })
         .catch(err => {
@@ -130,6 +133,37 @@ export default {
 													${this.generateGrid(jsonConfig.cols[i])}
 												</div>`;
         }
+        return this.StoreListHtmlCode;
+      } else {
+        return this.crearStoreList(jsonConfig.id);
+      }
+      //console.log(StoreListHtmlCode);
+
+      this.StoreListHtmlCode = StoreListHtmlCode;
+    } /*
+    generateGrid(jsonConfig) {
+      this.StoreListHtmlCode = "";
+      if (jsonConfig.rows) {
+        for (let i = 0; i < jsonConfig.rows.length; i++) {
+          this.StoreListHtmlCode += `<div class="row px-3 py-3 mx-0" style="height: ${
+            jsonConfig.rows[i].height
+          }%;border: 1px solid black">
+													${this.generateGrid(jsonConfig.rows[i])}
+												</div>`;
+        }
+
+        return this.StoreListHtmlCode;
+      } else if (jsonConfig.cols) {
+        
+        for (let i = 0; i < jsonConfig.cols.length; i++) {
+          this.StoreListHtmlCode += `<div class="col-md-${
+            jsonConfig.cols[i].width
+          } px-3 py-3 mx-0 " style=" height: ${
+            jsonConfig.cols[i].height
+          }%; border: 1px solid black">
+													${this.generateGrid(jsonConfig.cols[i])}
+												</div>`;
+        }
 
         return this.StoreListHtmlCode;
       } else {
@@ -138,19 +172,27 @@ export default {
       //console.log(StoreListHtmlCode);
 
       this.StoreListHtmlCode = StoreListHtmlCode;
-    },
+    },*/,
     crearStoreList(id) {
       this.StoreListHtmlCode +=
         `<select selectId="${
           this.selectPositionCountID
         }" class="form-control selecte` + '">';
-      for (let i = 1; i < this.stores.length; i++) {
-        if (i == id) {
+      for (let i = 0; i < this.stores.length; i++) {
+        if (i + 1 == id) {
           this.StoreListHtmlCode +=
-            '<option selected value="' + i + '">' + this.stores[i].name + "</option>";
+            '<option selected value="' +
+            `${i + 1}` +
+            '">' +
+            this.stores[i].name +
+            "</option>";
         } else {
           this.StoreListHtmlCode +=
-            '<option value="' + i + '">' + this.stores[i].name + "</option>";
+            '<option value="' +
+            `${i + 1}` +
+            '">' +
+            this.stores[i].name +
+            "</option>";
         }
       }
       this.StoreListHtmlCode += "</select>";
@@ -160,10 +202,12 @@ export default {
     },
     generateNewScreenLayout(newLayout) {
       if (newLayout.rows) {
-        this.newScreenLayout += '"rows":[';
-
+        this.newScreenLayout += `"height":"${newLayout.height}","width":${
+          newLayout.width
+        },"rows":[`;
         for (let i = 0; i < newLayout.rows.length; i++) {
-          this.newScreenLayout += `{"height": ${newLayout.rows[i].height},`;
+          this.newScreenLayout += "{";
+
           this.generateNewScreenLayout(newLayout.rows[i]);
           if (i == newLayout.rows.length - 1) {
             this.newScreenLayout += "}";
@@ -174,11 +218,10 @@ export default {
         this.newScreenLayout += "]";
         return this.newScreenLayout;
       } else if (newLayout.cols) {
-        this.newScreenLayout += '"cols":[';
+        this.newScreenLayout += `"height":"${newLayout.height}","cols":[`;
         for (let i = 0; i < newLayout.cols.length; i++) {
-          this.newScreenLayout += `{ "width": ${
-            newLayout.cols[i].width
-          } ,"height": ${newLayout.cols[i].height},`;
+          this.newScreenLayout += "{";
+
           this.generateNewScreenLayout(newLayout.cols[i]);
           if (i == newLayout.cols.length - 1) {
             this.newScreenLayout += "}";
@@ -189,6 +232,8 @@ export default {
         this.newScreenLayout += "]";
         return this.newScreenLayout;
       } else {
+        this.newScreenLayout += `"height":"${newLayout.height}",`;
+        this.newScreenLayout += `"width":${newLayout.width},`;
         this.newScreenLayout += `"id":${
           this.storeSelect[this.layoutPositionCountID]
         }`;
@@ -199,7 +244,7 @@ export default {
     updateLayout() {
       const url =
         urls.host + urls.routes.apiPrefix + urls.routes.layouts + "/" + this.id;
-
+      var reference = this;
       axios
         .put(url, {
           LAYOUT: this.newScreenLayout
@@ -223,10 +268,10 @@ export default {
       this.storeSelect = storeSelect;
       console.log(this.storeSelect);
 
-      this.newScreenLayout = "{ ";
+      this.newScreenLayout = "{";
       this.generateNewScreenLayout(JSON.parse(this.edit_screen.LAYOUT));
       this.newScreenLayout += "}";
-      console.log("new layout:" + this.newScreenLayout);
+      console.log(this.newScreenLayout);
       this.updateLayout();
       this.layoutPositionCountID = 0;
     },

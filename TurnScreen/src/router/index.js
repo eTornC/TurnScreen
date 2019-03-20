@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import screenManager from '@/components/main'
 import showScreenComponet from '@/components/showScreenComponet.vue'
+import screenManager from '@/components/screenManager.vue'
 import home from '@/components/home.vue'
 
 Vue.use(Router)

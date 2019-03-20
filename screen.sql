@@ -39,10 +39,12 @@ CREATE TABLE LAYOUTS (
 );
 
 INSERT INTO LAYOUTS (NAME,LAYOUT,TYPE)
-VALUES ('Pantalla1','{"cols":[{"width":12,"height":"100","rows":[{"height":"33","id":1},{"height":"33","id":1},{"height":"33","cols":[{"height":"100","width":6,"id":1},{"height":"100","width":6,"id":1}]}]}]}','TEMPLATE'),
-('Pantalla2','{"cols":[{"width":12,"height":"100","rows":[{"height":"100","cols":[{"height":"100","width":6,"id":1},{"height":"100","width":6,"rows":[{"height":"50","width":6,"id":1},{"height":"50","width":6,"id":1}]}]}]}]}','TEMPLATE'),
-('Pantalla3','{"cols":[{"width":12,"height":"100","rows":[{"height":"100","cols":[{"height":"100","width":6,"id":1},{"height":"100","width":6,"id":1}]}]}]}','TEMPLATE');
+VALUES 
+('Pantalla2','{"height":"100","cols":[{"width":12,"height":"100","rows":[{"height":"100","cols":[{"height":"100","width":6,"id":1},{"height":"100","width":6,"rows":[{"height":"50","width":6,"id":1},{"height":"50","width":6,"id":1}]}]}]}]}','TEMPLATE'),
 
+('Pantalla3','{"height":"100","cols":[{"width":12,"height":"100","rows":[{"height":"100","cols":[{"height":"100","width":6,"id":1},{"height":"100","width":6,"id":1}]}]}]}','TEMPLATE'),
+
+('Pantalla4','{"height":"100","cols":[{"width":12,"height":"100","rows":[{"height":"50","width":6,"id":1},{"height":"50","cols":[{"height":"100","width":6,"id":1},{"height":"100","width":6,"id":1}]}]}]}','TEMPLATE');
 
 
 /*
@@ -50,3 +52,4 @@ VALUES ('Pantalla1','{"cols":[{"width":12,"height":"100","rows":[{"height":"33",
 ('TurnScreen','','TURN');
 ('TotemScreen','','TOTEM');
 */
+
