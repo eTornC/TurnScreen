@@ -11,14 +11,12 @@ export default {
     turnScreen: '/turnScreen',
     section:'/section',
     template:'/template',
-    layouts:'/LAYOUTS',
-
-    apiPrefix:'/api.php/records',
-    //apiPrefix:'/~a15zehcheche/eTorn/api.php/records',
-
-    //prefix: '/~a16josortmar/eTorn',
-    prefix: '/eTorn',
-
+    layouts:'/layouts',
+    layout:'/layout',
+    turns_screen:'/turns-screen',
+    waitingTurns:'/waitingTurns',
+    actualTurn:'/actualTurn',
+    prefix: '',
     stores: '/stores',
     store: '/store',
 

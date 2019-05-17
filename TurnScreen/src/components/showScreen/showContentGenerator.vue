@@ -9,11 +9,11 @@
       <div class="store_turn">
         <ul>
           <li>
-            <span class="actual">{{computedActualTurn}}</span>
+            <span  :key="index" v-for="(turn,index) in actualTurn"  class="actual">T{{turn.number}}</span>
           </li>
         </ul>
         <ul>
-          <li :key="waiting.id" v-for="waiting in turnWaiting" >T{{waiting.number}}</li>
+          <li :key="index" v-for="(waiting,index) in turnWaiting" >T{{waiting.number}}</li>
         </ul>
       </div>
     </div>
@@ -46,8 +46,7 @@ export default {
       axios
         .get(url)
         .then(res => {
-          this.store = res.data[0];
-
+          this.store = res.data;
           this.updateActualTurn();
           this.updateTurnWaiting();
         })
@@ -62,19 +61,19 @@ export default {
         urls.routes.store +
         "/" +
         this.store.id +
-        "/actualTurn";
-      //console.log(url);
+        urls.routes.actualTurn;
+      console.log(url);
 
       axios
         .get(url)
         .then(res => {
-          if (res.data.error) {
-            this.actualTurn = {};
-          } else {
+          console.log(res.data);
             this.actualTurn = res.data;
-          }
+                    console.log(this.actualTurn);
+
         })
         .catch(err => {
+          this.actualTurn = {};
           console.log(err);
         });
     },
@@ -85,7 +84,7 @@ export default {
         urls.routes.store +
         "/" +
         this.store.id +
-        "/turns";
+        urls.routes.waitingTurns;
       //console.log(url);
 
       axios

@@ -10,18 +10,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(template,index) in templates" :key="template.ID" >
+        <tr v-for="(template,index) in templates" :key="template.id" >
             <td>{{index + 1}}</td>
-            <td>{{template.NAME}}</td>
-            <td>{{template.DESCRIPTION}}</td>
+            <td>{{template.name}}</td>
+            <td>{{template.description}}</td>
             <td><button type="button" @click="select(index)" class="btn btn-primary">Mostra</button></td>
         </tr>
       </tbody>
     </table>
   </div>
   <div class="show" v-else>
-        <showScreen-component :jsonConfig="JSON.parse(templateSelect.LAYOUT)"/>
-        <button type="button" @click="select(null)" class="btn btn-danger">cancel</button>
+        <showScreen-component :jsonConfig="templateSelect.layout"/>
+        <!--button type="button" @click="select(null)" class="btn btn-danger">cancel</button-->
   </div>
 </template>
 
@@ -48,14 +48,15 @@ export default {
   },
   methods: {
     getTemplates() {
-      const url = urls.host + urls.routes.apiPrefix + urls.routes.layouts;
+      const url = urls.host + urls.routes.prefix + urls.routes.layouts;
       //console.log(url);
       var reference = this;
       axios
         .get(url)
         .then(res => {
-          reference.templates = res.data.records.filter(
-            layout => layout.TYPE == "TURN"
+            console.log(res.data);
+          reference.templates = res.data.filter(
+            layout => layout.type == "TURNSCREEN"
           );
           console.log(reference.templates);
         })
