@@ -20,6 +20,10 @@ export default {
     stores: '/stores',
     store: '/store',
 
-    config: '/config'
+    config: '/config',
+    publicity:'/publicity',
+    publicitys:'/publicities',
+    waitingTurns:'/waitingTurns',
+    actualTurn:'/actualTurn'
   },
 }

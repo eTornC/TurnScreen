@@ -9,7 +9,8 @@
       <div class="store_turn">
         <ul>
           <li>
-            <span  :key="index" v-for="(turn,index) in actualTurn"  class="actual">T{{turn.number}}</span>
+            <span :key="index" v-for="(turn,index) in actualTurn"  class="actual">T{{turn.number}}</span>
+            <span v-if="!actualTurn"  class="actual">NO TURNS</span>
           </li>
         </ul>
         <ul>
@@ -70,10 +71,11 @@ export default {
           console.log(res.data);
             this.actualTurn = res.data;
                     console.log(this.actualTurn);
-
+          if(res.data.error){
+            this.actualTurn = null;
+          }
         })
         .catch(err => {
-          this.actualTurn = {};
           console.log(err);
         });
     },

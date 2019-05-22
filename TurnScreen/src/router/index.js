@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import showScreenComponet from '@/components/showScreenComponet.vue'
-import screenManager from '@/components/screenManager.vue'
 import home from '@/components/home.vue'
 
 Vue.use(Router)
@@ -9,14 +8,9 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/:id',
       name: 'home',
       component: home
-    },
-    {
-      path: '/screenManager',
-      name: 'screenManager',
-      component: screenManager
     },
     {
       path: '/showScreenComponet',
