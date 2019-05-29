@@ -53,7 +53,7 @@ export default {
     this.getActualTurn();
     this.getWaitingTurn();
     this.resfescar = null;
-    // this.resfescar = setInterval(this.resfescarData, 1000);
+    this.resfescar = setInterval(this.resfescarData, 1000);
   },
   methods: {
     refresh() {
@@ -90,13 +90,13 @@ export default {
         "/" +
         this.id +
         config.routes.actualTurn;
-      // console.log(url);
+      console.log(url);
 
       axios
         .get(url)
         .then(res => {
           this.actualTurn = res.data;
-          console.log(this.actualTurn);
+          //console.log(this.actualTurn);
 
           if (res.data.error) {
             this.actualTurn = false;
@@ -121,7 +121,7 @@ export default {
         .get(url)
         .then(res => {
           this.waitingTurns = res.data;
-          console.log(this.waitingTurns);
+          //console.log(this.waitingTurns);
         })
         .catch(err => {
           console.log("Fail");
