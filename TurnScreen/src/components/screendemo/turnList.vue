@@ -13,10 +13,13 @@
             v-else
             :key="index"
             v-for="(turn,index) in actualTurn"
-          >> T{{turn.number}}</h1>
+          >
+            >
+            {{turnLeter(turn)}}
+          </h1>
           <ul class="p-0 waitingTurns">
             <li class="pl-2 border-bottom" :key="index" v-for="(turn,index) in waitingTurns">
-              <h3>T{{turn.number}}</h3>
+              <h3>{{turnLeter(turn)}}</h3>
             </li>
           </ul>
         </div>
@@ -50,7 +53,7 @@ export default {
     this.getActualTurn();
     this.getWaitingTurn();
     this.resfescar = null;
-    this.resfescar = setInterval(this.resfescarData, 1000);
+    // this.resfescar = setInterval(this.resfescarData, 1000);
   },
   methods: {
     refresh() {
@@ -87,13 +90,14 @@ export default {
         "/" +
         this.id +
         config.routes.actualTurn;
-      console.log(url);
+      // console.log(url);
 
       axios
         .get(url)
         .then(res => {
           this.actualTurn = res.data;
-          //console.log(this.actualTurn);
+          console.log(this.actualTurn);
+
           if (res.data.error) {
             this.actualTurn = false;
           }
@@ -110,17 +114,44 @@ export default {
         "/" +
         this.id +
         config.routes.waitingTurns;
+
       console.log(url);
 
       axios
         .get(url)
         .then(res => {
           this.waitingTurns = res.data;
+          console.log(this.waitingTurns);
         })
         .catch(err => {
           console.log("Fail");
         });
+    },
+    turnLeter: function(turn) {
+      if (turn.number != null) {
+        if (turn.number.toString().length == 1) {
+          turn.number = "0" + turn.number.toString();
+        }
+      }
+      switch (turn.type) {
+        case "normal":
+          return "T" + turn.number;
+          break;
+        case "hour":
+          if (turn.number) {
+            return "A" + turn.number;
+          } else {
+            return "unsing";
+          }
+          break;
+        case "vip":
+          return "V" + turn.number;
+          break;
+      }
     }
+  },
+  computed: {
+    // a computed getter
   }
 };
 </script>
