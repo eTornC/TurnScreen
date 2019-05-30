@@ -18,8 +18,8 @@
             {{turnLeter(turn)}}
           </h1>
           <ul class="p-0 waitingTurns">
-            <li class="pl-2 border-bottom" :key="index" v-for="(turn,index) in waitingTurns">
-              <h3>{{turnLeter(turn)}}</h3>
+            <li  :key="index" v-for="(turn,index) in waitingTurns">
+              <h3 v-if="turn.number" class="pl-2 border-bottom">{{turnLeter(turn)}}</h3>
             </li>
           </ul>
         </div>
